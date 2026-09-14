@@ -12,6 +12,7 @@ import (
 	"syscall"
 )
 
+//go:noinline
 func newFile(fd int) (ret *rawFile) {
 	syscall.CloseOnExec(fd)
 	ret = &rawFile{
@@ -23,18 +24,21 @@ func newFile(fd int) (ret *rawFile) {
 	return
 }
 
+//go:inline
 func (f *rawFile) doRead(buf []byte) (int, error) {
 	addRef(&f.sem)
 	defer decRef(&f.sem)
 	return syscall.Read(f.fd, buf)
 }
 
+//go:inline
 func (f *rawFile) doWrite(buf []byte) (int, error) {
 	addRef(&f.sem)
 	defer decRef(&f.sem)
 	return syscall.Write(f.fd, buf)
 }
 
+//go:noinline
 func (f *rawFile) doClose() (ret error) {
 	if atomic.CompareAndSwapUint32(&f.sem, 1, 0) {
 		// last one wins (+closes)
