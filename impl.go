@@ -7,9 +7,9 @@
 package rawfile
 
 import (
+	"runtime"
 	"sync/atomic"
 	"syscall"
-	"runtime"
 )
 
 func newFile(fd int) (ret *rawFile) {
@@ -56,7 +56,6 @@ func (f *rawFile) close() error {
 	f.fd = -1
 	return nil
 }
-
 
 func addRef(v *uint32) uint32 {
 	return atomic.AddUint32(v, 1)

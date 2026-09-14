@@ -28,3 +28,7 @@ func (f *rawFile) Write(buf []byte) (n int, err error) {
 func (f *rawFile) Close() error {
 	return f.doClose()
 }
+
+func (f *rawFile) Fd() int {
+	return f.fd
+}
